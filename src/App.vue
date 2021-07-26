@@ -1,60 +1,77 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+    <v-container>
+      <v-card tile elevation="1" class="mt-5">
+        <v-card-title>
+          <h1>Login</h1>
+        </v-card-title>
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
+        <v-form @submit.prevent="handleSubmit" v-model="isValid">
+          <v-card-text>
+            <v-text-field label="Email" prepend-icon="mdi-account-circle" 
+              :rules="emailRules"
+              v-model="user.email" />
+            <v-text-field label="Password" prepend-icon="mdi-lock" 
+              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" 
+              :type="showPassword ? 'text' : 'password'" 
+              :rules="passwordRules"
+              @click:append="handleToggle"
+              v-model="user.password" />
+          </v-card-text>
+          
+          <v-divider></v-divider>
 
-      <v-spacer></v-spacer>
+          <v-card-actions>
+            <v-btn color="success" type="submit" :disabled="!isValid">Login</v-btn>
+            <v-btn color="info">Register</v-btn>
+          </v-card-actions>
+        </v-form>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <v-main>
-      <HelloWorld/>
-    </v-main>
+      </v-card>
+    </v-container>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    
   },
 
-  data: () => ({
-    //
-  }),
+  data() {
+    return {
+      showPassword: false,
+      user: {
+        email: '',
+        password: ''
+      },
+      isValid: false, // melakukan pengecekan pada form, jika form sudah siap atau belum untuk disubmit
+      emailRules: [ // config validasi vuetify
+        v => !!v || 'Email is required',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+      ],
+      passwordRules: [ // config validasi vuetify
+        v => !!v || 'Password is required',
+        v => (v && v.length <= 10) || 'Password must be less than 10 characters',
+      ]
+    }
+  },
+
+  methods: {
+    handleToggle() {
+      this.showPassword = !this.showPassword
+    },
+    handleSubmit() {
+      console.log(this.user)
+      this.user = {
+        email: '',
+        password: ''
+      }
+    }
+  }
 };
 </script>
